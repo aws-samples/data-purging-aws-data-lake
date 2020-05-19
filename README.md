@@ -101,8 +101,9 @@ Please note, below are the 3rd parties included into this Lambda script, which i
 - pg8000 (Github: https://github.com/mfenniak/pg8000, License: https://github.com/mfenniak/pg8000/blob/master/LICENSE)
 
 
-1. /Scripts/index-by-row-number/lambda_function.py (Line no 39 to 45 integrates pg8000 for making connectivity with RDS. This can be replaced with any other library for JDBC connection)
-
+1. /Scripts/index-by-row-number/deleteUserRecords.py (Lines no 28 to 33 use pg8000 to connect to RDS Postgres.
+Lines no 43 to 54 use pg8000 to query to RDS Postgres.)
+2. /Scripts/index-by-row-number/updateIndex.py (Lines no 30 to 35 use pg8000 to connect to RDS Postgres. Lines no 46 to 39 use pg8000 to insert data to RDS Postgres.)
 
 
 Option 2: Scan file name to find meta data and use DynamoDB as index metastore:
