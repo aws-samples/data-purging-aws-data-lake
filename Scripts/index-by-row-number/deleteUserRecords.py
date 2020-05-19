@@ -5,7 +5,8 @@ Below are the 3rd parties this script includes
 1. pg8000
 (Github: https://github.com/mfenniak/pg8000,
 License: https://github.com/mfenniak/pg8000/blob/master/LICENSE)
-Line no 39 to 45 integrates pg8000 for making connectivity with RDS. 
+Lines no 28 to 33 use pg8000 to connect to RDS Postgres.
+Lines no 43 to 54 use pg8000 to query to RDS Postgres.
 """
 
 import os
@@ -16,24 +17,15 @@ from botocore.exceptions import NoCredentialsError, ClientError
 from urllib.parse import urlparse
 
 def get_connection():
-    """
-        Method to establish the connection.
-    """
     try:
         print ("Connecting to database")
-        # Create a low-level client with the service name for rds
         client = boto3.client("rds")
-        # Read the environment variables to get DB EndPoint
         DBEndPoint = os.environ.get("DBEndPoint")
-        # Read the environment variables to get the Database name
         DatabaseName = os.environ.get("DatabaseName")
-        # Read the environment variables to get the Database username which has access to database.
         DBUserName = os.environ.get("DBUserName")
-        # Generates an auth token used to connect to a db with IAM credentials.
         password = client.generate_db_auth_token(
             DBHostname=DBEndPoint, Port=5432, DBUsername=DBUserName
         )
-        # Establishes the connection with the server using the token generated as password
         conn = pg8000.connect(
             host=DBEndPoint,
             user=DBUserName,
@@ -46,19 +38,20 @@ def get_connection():
         print ("While connecting failed due to :{0}".format(str(e)))
         return None
 
-def get_customer_files(customerids):
+def get_user_files(userids):
     try:
         myConnection = get_connection()
         cur = myConnection.cursor()
         sql = """
             SELECT s3path,
                 ARRAY_AGG(recordline)
-                FROM staging_customer_objects
-                WHERE customerid in (%s)
+                FROM user_objects
+                WHERE userid in (%s)
                 GROUP BY 1
                 ;
-            """ % ','.join('%s' for i in customerids)
-        cur.execute(sql, customerids)
+            """ % ','.join('%s' for i in userids)
+        cur.execute(sql, userids)
+        myConnection.commit()
         return cur.fetchall()
     except Exception as e:
         print ("While connecting failed due to :{0}".format(str(e)))
@@ -92,9 +85,9 @@ def updateFile(client, bucket, object_name, indexList):
 
 def lambda_handler(event, context):
     s3 = boto3.client('s3')
-    customerids = event['customerids']
-    customeridsList = customerids.split(",")
-    res = get_customer_files(customeridsList)
+    userids = event['userids']
+    useridsList = userids.split(",")
+    res = get_user_files(useridsList)
     for row in res:
         parsedUri = urlparse(row[0])
         indexList = row[1]
@@ -102,4 +95,5 @@ def lambda_handler(event, context):
         s3object = parsedUri.path.lstrip('/')
         print('Updating file: ' + row[0] + '\n')
         updateFile(s3, bucket, s3object, indexList)
-        print('File downloaded')
+        print('File updated')
+
