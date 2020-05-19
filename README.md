@@ -95,7 +95,7 @@ Option 1: Scan every record of the data file in Amazon S3 to create index, with 
 ---------------------------------------------------------------------------------------------------
 As files are uploaded to the data lake, a Lambda based job will scan the file and create index with row number and S3 path of the file in RDS database table (Columns: customer_id, s3_file_path, row_number). This RDS table will act as input to the purge utility, to take delete and overwrite action on S3 file
 
-Below Lambda script is used to update the RDS metastore, by scanning the whole file. Please note, this integrates "psycopg2" Python library to make connection to RDS from Lambda.
+Below Lambda script is used to update the RDS metastore, by scanning the whole file.
 
 Please note, below are the 3rd parties included into this Lambda script, which is listed under requirements.txt
 - pg8000 (Github: https://github.com/mfenniak/pg8000, License: https://github.com/mfenniak/pg8000/blob/master/LICENSE)
