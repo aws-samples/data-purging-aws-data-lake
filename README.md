@@ -1,8 +1,8 @@
 ## How to Implement GDPR Data Purging in AWS Data Lake
 
-GDPR is an important aspect in today’s technology world and becoming a necessity when we implement solutions in AWS public cloud. There are several aspects of GDPR such as privacy, security, PII, right to be forgotten etc. Here we are trying to build a prototype or utility which will be a starting point and can give a reference architecture to customers, who wants to implement “Right to be forgotten” or “Data purging” use case in their data analytics solution. 
+GDPR is an important aspect in today’s technology world and becoming a necessity when we implement solutions in AWS public cloud. There are several aspects of GDPR such as privacy, security, PII, right to be forgotten etc. Here we are trying to provide a reference architecture along with few sample scripts which will be a starting point for customers, who want to implement “Right to be forgotten” or “Data purging” use case in their data analytics solution. 
 
-In AWS when we talk about data lake, most of the times we represent AWS S3 which is secure, and highly scalable object store. We might have millions or billions of objects in S3 Data Lake and if we need to delete data from the massive object store, then first thing we need to have is an index Metastore which can help us identify the location of the data in S3 or other storage layers. Once we have identified the location/path, then the next action we can take is deleting the data from S3, either by deleting the complete object/file/record or by overwriting it.
+In AWS when we talk about data lake, most times we represent AWS S3 which is a secure and highly scalable object store. We might have millions or billions of objects in S3 Data Lake and if we need to delete data from the massive object store, then first thing we need to have is an index Metastore which can help us identify the location of the data in S3 or other storage layers. Once we have identified the location/path, then the next action we can take is deleting the data from S3, either by deleting the complete object/file/record or by overwriting it.
 
 
 ## Design Considerations
